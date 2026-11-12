@@ -5,7 +5,7 @@ site_description: A professional portfolio showcasing technical writing, API doc
 
 site_author: Ibifuro Brown Sunday
 
-site_url: ""
+site_url: "https://github.com/BrownIbifuro/technical-writing-portfolio"
 
 theme:
   name: material
