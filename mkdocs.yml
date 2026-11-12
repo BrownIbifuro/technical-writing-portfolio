@@ -1,0 +1,69 @@
+
+site_name: Ibifuro Brown | Technical Writing Portfolio
+
+site_description: A professional portfolio showcasing technical writing, API documentation, developer tutorials, software guides, technical case studies and data documentation.
+
+site_author: Ibifuro Brown Sunday
+
+site_url: ""
+
+theme:
+  name: material
+
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: blue
+
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+nav:
+  - Home: index.md
+  - About Me: about.md
+
+  - API Documentation:
+      - Overview: api-documentation/index.md
+
+  - Developer Tutorials:
+      - Overview: developer-tutorials/index.md
+
+  - User Guides:
+      - Overview: user-guides/index.md
+
+  - Technical Case Studies:
+      - Overview: technical-case-studies/index.md
+
+  - Data Documentation:
+      - Overview: data-documentation/index.md
+
+  - Troubleshooting:
+      - Overview: troubleshooting-guides/index.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+
+plugins:
+  - search
