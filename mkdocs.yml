@@ -33,9 +33,19 @@ theme:
 nav:
   - Home: index.md
   - About Me: about.md
+  - Tools Reference: tools-reference.md
+  
+  
 
   - API Documentation:
       - Overview: api-documentation/index.md
+      - PageTurner Books API:
+          - Overview: api-documentation/pageturner-books/index.md
+          - Getting Started: api-documentation/pageturner-books/getting-started.md
+          - Authentication: api-documentation/pageturner-books/authentication.md
+          - API Reference: api-documentation/pageturner-books/reference.md
+          - Data Models: api-documentation/pageturner-books/data-models.md
+          - Error Handling: api-documentation/pageturner-books/error-handling.md
 
   - Developer Tutorials:
       - Overview: developer-tutorials/index.md
@@ -45,6 +55,7 @@ nav:
 
   - Technical Case Studies:
       - Overview: technical-case-studies/index.md
+      - MCP Task Manager: technical-case-studies/mcp-task-manager/index.md
 
   - Data Documentation:
       - Overview: data-documentation/index.md

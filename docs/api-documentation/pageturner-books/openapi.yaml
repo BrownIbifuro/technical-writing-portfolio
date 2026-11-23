@@ -1,0 +1,519 @@
+
+openapi: 3.1.0
+
+info:
+  title: PageTurner Books API
+  version: 1.0.0
+  description: |
+    The PageTurner Books API is a fictional REST API designed for
+    technical documentation practice.
+
+    It provides endpoints for retrieving book information,
+    checking inventory availability, and creating and retrieving
+    customer orders.
+
+    This specification describes a proposed API contract.
+    It does not represent a live or deployed backend.
+
+servers:
+  - url: https://api.pageturnerbooks.example/v1
+    description: Fictional API server; not publicly accessible.
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Books
+    description: Retrieve book catalogue and inventory information.
+  - name: Orders
+    description: Create and retrieve customer orders.
+
+paths:
+  /books:
+    get:
+      tags:
+        - Books
+      summary: List books
+      description: |
+        Retrieves a paginated list of books. Results can be filtered
+        by genre or searched using a search term.
+      operationId: listBooks
+      parameters:
+        - name: page
+          in: query
+          description: Page number to retrieve. Defaults to 1.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Number of books per page. Defaults to 20.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 20
+        - name: genre
+          in: query
+          description: Filter books by genre.
+          required: false
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: Search books using a search term.
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Book catalogue retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookListResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /books/{bookId}:
+    get:
+      tags:
+        - Books
+      summary: Retrieve a book
+      description: Retrieves the details of a specific book.
+      operationId: getBook
+      parameters:
+        - name: bookId
+          in: path
+          description: Unique identifier of the book.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Book retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /books/{bookId}/availability:
+    get:
+      tags:
+        - Books
+      summary: Check book availability
+      description: Retrieves the current stock availability of a book.
+      operationId: getBookAvailability
+      parameters:
+        - name: bookId
+          in: path
+          description: Unique identifier of the book.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Book availability retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AvailabilityResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /orders:
+    post:
+      tags:
+        - Orders
+      summary: Create an order
+      description: |
+        Creates a customer order using the supplied book identifiers
+        and quantities.
+
+        An order is created with a pending status. If the requested
+        quantity exceeds available stock, the API returns a 409
+        Conflict response and does not create the order.
+
+        Payment processing is outside the scope of this API.
+      operationId: createOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRequest"
+      responses:
+        "201":
+          description: Order created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /orders/{orderId}:
+    get:
+      tags:
+        - Orders
+      summary: Retrieve an order
+      description: Retrieves the details of a specific order.
+      operationId: getOrder
+      parameters:
+        - name: orderId
+          in: path
+          description: Unique identifier of the order.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+        Supply the API key using the Authorization header:
+        Authorization: Bearer YOUR_API_KEY
+
+  schemas:
+    Book:
+      type: object
+      required:
+        - id
+        - title
+        - author
+        - isbn
+        - price
+        - currency
+        - genre
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the book.
+        title:
+          type: string
+          description: Title of the book.
+        author:
+          type: string
+          description: Author of the book.
+        isbn:
+          type: string
+          description: International Standard Book Number.
+        price:
+          type: number
+          description: Price of the book.
+        currency:
+          type: string
+          description: Currency used for the book price.
+        genre:
+          type: string
+          description: Genre or category of the book.
+        description:
+          type: string
+          description: Optional description of the book.
+
+    InventoryAvailability:
+      type: object
+      required:
+        - bookId
+        - available
+        - quantityAvailable
+        - stockStatus
+      properties:
+        bookId:
+          type: string
+          description: Identifier of the book.
+        available:
+          type: boolean
+          description: Indicates whether the book is available.
+        quantityAvailable:
+          type: integer
+          minimum: 0
+          description: Number of units currently available.
+        stockStatus:
+          type: string
+          enum:
+            - in_stock
+            - low_stock
+            - out_of_stock
+          description: Current stock status.
+
+    CreateOrderRequest:
+      type: object
+      required:
+        - customerEmail
+        - items
+      properties:
+        customerEmail:
+          type: string
+          format: email
+          description: Email address of the customer.
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/OrderItemRequest"
+
+    OrderItemRequest:
+      type: object
+      required:
+        - bookId
+        - quantity
+      properties:
+        bookId:
+          type: string
+          description: Identifier of the book to order.
+        quantity:
+          type: integer
+          minimum: 1
+          description: Number of units requested.
+
+    OrderItem:
+      type: object
+      required:
+        - bookId
+        - title
+        - quantity
+        - unitPrice
+      properties:
+        bookId:
+          type: string
+          description: Identifier of the ordered book.
+        title:
+          type: string
+          description: Title of the ordered book.
+        quantity:
+          type: integer
+          minimum: 1
+          description: Number of units ordered.
+        unitPrice:
+          type: number
+          description: Price per unit at the time of the order.
+
+    Order:
+      type: object
+      required:
+        - id
+        - customerEmail
+        - items
+        - totalAmount
+        - currency
+        - status
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the order.
+        customerEmail:
+          type: string
+          format: email
+          description: Email address of the customer.
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        totalAmount:
+          type: number
+          description: Total amount of the order.
+        currency:
+          type: string
+          description: Currency used for the order.
+        status:
+          type: string
+          enum:
+            - pending
+          description: Initial status assigned when an order is created.
+        createdAt:
+          type: string
+          format: date-time
+          description: Order creation timestamp in ISO 8601 format (UTC).
+
+    Pagination:
+      type: object
+      required:
+        - page
+        - limit
+        - totalItems
+        - totalPages
+      properties:
+        page:
+          type: integer
+          minimum: 1
+        limit:
+          type: integer
+          minimum: 1
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+
+    BookListResponse:
+      type: object
+      required:
+        - data
+        - pagination
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Book"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+
+    BookResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/Book"
+
+    AvailabilityResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/InventoryAvailability"
+
+    OrderResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/Order"
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              enum:
+                - BAD_REQUEST
+                - UNAUTHORIZED
+                - FORBIDDEN
+                - NOT_FOUND
+                - CONFLICT
+                - RATE_LIMIT_EXCEEDED
+                - INTERNAL_SERVER_ERROR
+            message:
+              type: string
+
+  responses:
+    BadRequest:
+      description: The request contains invalid or missing information.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    Unauthorized:
+      description: Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    Forbidden:
+      description: The client does not have permission to perform the operation.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    NotFound:
+      description: The requested resource could not be found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    Conflict:
+      description: The request conflicts with the current resource state.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    TooManyRequests:
+      description: The client has exceeded the permitted request rate.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    InternalServerError:
+      description: An unexpected server-side error occurred.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"

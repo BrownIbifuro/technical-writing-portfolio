@@ -4,7 +4,7 @@
 
 This section contains API references and technical documentation designed to help developers understand and interact with software interfaces.
 
-The documentation will cover:
+The documentation covers:
 
 - API architecture and overview.
 - Authentication and authorisation.
@@ -13,10 +13,18 @@ The documentation will cover:
 - Error handling and status codes.
 - Practical API examples.
 
-## Featured Project
+## Featured Projects
 
-**ExpiryWatch API Documentation**
+### PageTurner Books API
 
-A technical reference documenting inventory management and product monitoring API functionality.
+A sample REST API documentation project covering bookstore catalogue management, inventory availability, order creation, authentication, and error handling.
+
+[Explore the PageTurner Books API documentation](pageturner-books/index.md)
 
 *Status: Documentation in development.*
+
+### ExpiryWatch API Documentation
+
+A planned technical reference for documenting inventory management and product monitoring API functionality.
+
+*Status: Awaiting API implementation.*
