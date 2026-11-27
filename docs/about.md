@@ -1,6 +1,6 @@
 # About Me
 
-I'm Ibifuro Brown Sunday, a Computer Science graduate with an interest in technical writing, software documentation, and data communication.
+Hi, I'm Ibifuro Brown Sunday, a Computer Science graduate focused on technical writing, software documentation, and making complex technical information clear, accessible, and useful.
 
 My technical background gives me an appreciation of how software systems are designed, developed, and used. I enjoy breaking down complex technical information into structured explanations that are accessible to developers, end users, and other technical audiences.
 
